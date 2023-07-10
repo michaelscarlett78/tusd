@@ -1,5 +1,6 @@
 FROM --platform=$BUILDPLATFORM golang:1.20.5-alpine AS builder
 WORKDIR /go/src/github.com/tus/tusd
+RUN echo "TEST"
 
 # Add gcc and libc-dev early so it is cached
 RUN set -xe \
@@ -15,6 +16,7 @@ COPY cmd/ ./cmd/
 COPY internal/ ./internal/
 COPY pkg/ ./pkg/
 
+
 # Get the version name and git commit as a build argument
 ARG GIT_VERSION
 ARG GIT_COMMIT
@@ -25,8 +27,10 @@ ARG TARGETARCH
 
 RUN set -xe \
 	&& GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
-        -ldflags="-X github.com/tus/tusd/cmd/tusd/cli.VersionName=${GIT_VERSION} -X github.com/tus/tusd/cmd/tusd/cli.GitCommit=${GIT_COMMIT} -X 'github.com/tus/tusd/cmd/tusd/cli.BuildDate=$(date --utc)'" \
+        -ldflags="-X github.com/michaelscarlett78/tusd/cmd/tusd/cli.VersionName=mike -X github.com/michaelscarlett78/tusd/cmd/tusd/cli.GitCommit=0.1 -X 'github.com/michaelscarlett78/tusd/cli.BuildDate=$(date --utc)'" \
         -o /go/bin/tusd ./cmd/tusd/main.go
+RUN echo $TARGETOS 
+RUN echo $TARGETARCH 
 
 # start a new stage that copies in the binary built in the previous stage
 FROM alpine:3.18.2 as runner
