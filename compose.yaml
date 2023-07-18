@@ -5,4 +5,7 @@ services:
         context: ./
         target: runner
       volumes:
-        - .:/upload
+        - tusd:/upload
+
+volumes:
+  tusd:
