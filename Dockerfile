@@ -41,6 +41,7 @@ RUN apk add --no-cache ca-certificates jq bash \
     && mkdir -p /srv/tusd-hooks \
 	&& mkdir -p /srv/tusd-data/logs \
     && chown tusd:tusd /srv/tusd-data \
+	&& chown tusd:tusd /srv/tusd-data/logs \
     && chmod +x /usr/local/share/docker-entrypoint.sh /usr/local/share/load-env.sh
 
 ENV PYTHONUNBUFFERED=1
@@ -56,4 +57,4 @@ EXPOSE 1080
 USER tusd
 
 ENTRYPOINT ["/usr/local/share/docker-entrypoint.sh"]
-CMD [ "--hooks-dir", "/srv/tusd-hooks", ">> /srv/tusd-data/logs/log.txt]
+CMD [ "--hooks-dir", "/srv/tusd-hooks", "--upload-dir", "/uploads", ">> /srv/tusd-data/logs/log.txt"]
