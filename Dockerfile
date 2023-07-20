@@ -35,17 +35,21 @@ WORKDIR /srv/tusd-data
 COPY ./docker/entrypoint.sh /usr/local/share/docker-entrypoint.sh
 COPY ./docker/load-env.sh /usr/local/share/load-env.sh
 
-RUN apk add --no-cache ca-certificates jq bash python3 \
-	&& ln -sf python3 /usr/bin/python \
+RUN apk add --no-cache ca-certificates jq bash \
     && addgroup -g 1000 tusd \
     && adduser -u 1000 -G tusd -s /bin/sh -D tusd \
     && mkdir -p /srv/tusd-hooks \
     && chown tusd:tusd /srv/tusd-data \
     && chmod +x /usr/local/share/docker-entrypoint.sh /usr/local/share/load-env.sh
+
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+RUN pip3 install --no-cache --upgrade pip setuptools requests
+
 
 COPY --from=builder /go/bin/tusd /usr/local/bin/tusd
+COPY hooks/ ./srv/tusd-hooks/
 
 EXPOSE 1080
 USER tusd
