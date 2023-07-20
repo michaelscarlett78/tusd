@@ -1,4 +1,4 @@
-FROM --platform=amd64/linux golang:1.20.5-alpine AS builder
+FROM --platform=linux/amd64 golang:1.20.5-alpine AS builder
 WORKDIR /go/src/github.com/tus/tusd
 
 # Add gcc and libc-dev early so it is cached
