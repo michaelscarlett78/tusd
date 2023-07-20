@@ -57,4 +57,4 @@ EXPOSE 1080
 USER tusd
 
 ENTRYPOINT ["/usr/local/share/docker-entrypoint.sh"]
-CMD [ "--hooks-dir", "/srv/tusd-hooks", "--upload-dir", "/uploads", ">> /srv/tusd-data/logs/log.txt"]
+CMD [ "--hooks-dir", "/srv/tusd-hooks", "--upload-dir", "/uploads", ">> /srv/tusd-data/logs/log 2>&1"]
