@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.20.5-alpine AS builder
+FROM --platform=amd64/linux golang:1.20.5-alpine AS builder
 WORKDIR /go/src/github.com/tus/tusd
 
 # Add gcc and libc-dev early so it is cached
@@ -39,6 +39,7 @@ RUN apk add --no-cache ca-certificates jq bash \
     && addgroup -g 1000 tusd \
     && adduser -u 1000 -G tusd -s /bin/sh -D tusd \
     && mkdir -p /srv/tusd-hooks \
+	&& mkdir -p /srv/tusd-data/logs \
     && chown tusd:tusd /srv/tusd-data \
     && chmod +x /usr/local/share/docker-entrypoint.sh /usr/local/share/load-env.sh
 
@@ -55,4 +56,4 @@ EXPOSE 1080
 USER tusd
 
 ENTRYPOINT ["/usr/local/share/docker-entrypoint.sh"]
-CMD [ "--hooks-dir", "/srv/tusd-hooks" ]
+CMD [ "--hooks-dir", "/srv/tusd-hooks", ">> /srv/tusd-data/logs/log.txt]
