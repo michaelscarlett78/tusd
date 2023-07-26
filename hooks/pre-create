@@ -12,7 +12,8 @@ def make_post_request(url, data):
         response.raise_for_status()  # Check for errors
         return response.json()  # Return the JSON response
     except requests.exceptions.RequestException as e:
-        print("Error making POST request:", e)
+        # print("Error making POST request:", e)
+        sys.stderr.write("Error making POST request:", e)
         sys.exit(1)
 
 if __name__ == "__main__":
@@ -25,7 +26,8 @@ if __name__ == "__main__":
         data = data.strip()  # Remove any leading/trailing whitespaces
         data = json.loads(data)  # Parse the JSON data
     except Exception as e:
-        print("Error reading data from STDIN:", e)
+        # print("Error reading data from STDIN:", e)
+        sys.stderr.write("Error reading data from STDIN:", e)
         sys.exit(1)
     # Check we have a filename and exit if not 
     if data['Upload']['MetaData']['filename'] is null
