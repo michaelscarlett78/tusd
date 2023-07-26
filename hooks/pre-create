@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # Make the POST request and handle the response
     response_data = make_post_request(url, postdata)
     sys.stderr.write("Response:", response_data)
-    response_data = json.loads(response_data)
+    response_data = json.loads(response_data):
     if response_data['msg']['msgSeverity'] == 'F':
         sys.stderr.write('User authentication failed', response_data['msg']['msgMain'])
         sys.exit(1)
