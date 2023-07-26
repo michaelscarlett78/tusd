@@ -30,21 +30,27 @@ if __name__ == "__main__":
         sys.stderr.write("Error reading data from STDIN:", e)
         sys.exit(1)
     # Check we have key values from metadata and exit if not
-    if data['Upload']['MetaData']['filename'] is None:
+    try:
+        filename = data['Upload']['MetaData']['filename']
+    except Exception as e:
         sys.stderr.write("no filename specified")
         sys.exit(1)
-    if data['Upload']['MetaData']['user'] is None:
+    try:
+        User  = data['Upload']['MetaData']['user']
+    except Exception as e:
         sys.stderr.write("No user specified")
         sys.exit(1)
-    if data['Upload']['MetaData']['usersecurity'] is None:
+    try:
+        UserSecurity = data['Upload']['MetaData']['usersecurity']
+    except Exception as e:
         sys.stderr.write("No usersecret specified")
         sys.exit(1)
 
     # construct postdata JSON
     try:
         postdata = json.dumps({"mode": "ENQ",
-                               "user": data['Upload']['MetaData']['user'],
-                               "usersecurity": data['Upload']['MetaData']['usersecurity']})
+                               "user": User,
+                               "usersecurity": UserSecurity})
     except Exception as e:
         sys.stderr.write("Error generating post data", e)
         sys.exit(1)
