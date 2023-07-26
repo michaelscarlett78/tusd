@@ -44,14 +44,18 @@ RUN apk add --no-cache ca-certificates jq bash \
 	&& chown tusd:tusd /srv/tusd-data/logs \
     && chmod +x /usr/local/share/docker-entrypoint.sh /usr/local/share/load-env.sh
 
+# python setup
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
 RUN pip3 install --no-cache --upgrade pip setuptools requests
 
+# timezone 
+RUN apk add --no-cache tzdata
+ENV TZ=Pacific/Auckland
 
 COPY --from=builder /go/bin/tusd /usr/local/bin/tusd
-COPY hooks/ ./srv/tusd-hooks/
+COPY hooks/ /srv/tusd-hooks/
 
 EXPOSE 1080
 USER tusd

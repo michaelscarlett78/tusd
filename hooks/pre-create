@@ -4,7 +4,8 @@ import sys
 import requests
 import json
 
-    # Read data from STDIN (assuming it's JSON)
+
+# Read data from STDIN (assuming it's JSON)
 
 def make_post_request(url, data):
     try:
@@ -12,26 +13,46 @@ def make_post_request(url, data):
         response.raise_for_status()  # Check for errors
         return response.json()  # Return the JSON response
     except requests.exceptions.RequestException as e:
-        # print("Error making POST request:", e)
         sys.stderr.write("Error making POST request:", e)
         sys.exit(1)
 
+
 if __name__ == "__main__":
     # Get the URL from command-line arguments or set it directly
-    url = "https://testportal.mainstream.co.nz/TEST/subroutine/WEBTERMS"
+    url = "https://testportal.mainstream.co.nz/MAIN/subroutine/WEBTERMS/"
 
-    # Read data from STDIN (assuming it's JSON)
+    # Read data from STDIN (should be JSON)
     try:
         data = sys.stdin.read()
         data = data.strip()  # Remove any leading/trailing whitespaces
         data = json.loads(data)  # Parse the JSON data
     except Exception as e:
-        # print("Error reading data from STDIN:", e)
         sys.stderr.write("Error reading data from STDIN:", e)
         sys.exit(1)
-    # Check we have a filename and exit if not 
-    if data['Upload']['MetaData']['filename'] is null
+    # Check we have key values from metadata and exit if not
+    if data['Upload']['MetaData']['filename'] is None:
+        sys.stderr.write("no filename specified")
+        sys.exit(1)
+    if data['Upload']['MetaData']['user'] is None:
+        sys.stderr.write("No user specified")
+        sys.exit(1)
+    if data['Upload']['MetaData']['usersecurity'] is None:
+        sys.stderr.write("No usersecret specified")
+        sys.exit(1)
+
+    # construct postdata JSON
+    try:
+        postdata = json.dumps({"mode": "ENQ",
+                               "user": data['Upload']['MetaData']['user'],
+                               "usersecurity": data['Upload']['MetaData']['usersecurity']})
+    except Exception as e:
+        sys.stderr.write("Error generating post data", e)
+        sys.exit(1)
 
     # Make the POST request and handle the response
-    response_data = make_post_request(url, data)
-    print("Response:", response_data)
+    response_data = make_post_request(url, postdata)
+    sys.stderr.write("Response:", response_data)
+    response_data = json.loads(response_data)
+    if response_data['msg']['msgSeverity'] == 'F':
+        sys.stderr.write('User authentication failed', response_data['msg']['msgMain'])
+        sys.exit(1)
