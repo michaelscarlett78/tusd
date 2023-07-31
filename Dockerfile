@@ -54,6 +54,9 @@ RUN pip3 install --no-cache --upgrade pip setuptools requests
 RUN apk add --no-cache tzdata
 ENV TZ=Pacific/Auckland
 
+# samba and mount of remote server 
+
+
 COPY --from=builder /go/bin/tusd /usr/local/bin/tusd
 COPY hooks/ /srv/tusd-hooks/
 
@@ -61,4 +64,4 @@ EXPOSE 1080
 USER tusd
 
 ENTRYPOINT ["/usr/local/share/docker-entrypoint.sh"]
-CMD [ "--hooks-dir", "/srv/tusd-hooks", "--upload-dir", "/uploads", ">> /srv/tusd-data/logs/log 2>&1"]
+CMD [ "--hooks-dir", "/srv/tusd-hooks", "--hooks-enabled-events", "pre-create,pre-finish,post-finish"]

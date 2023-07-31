@@ -7,20 +7,19 @@ import json
 
 # Read data from STDIN (assuming it's JSON)
 
-def make_post_request(url, postdata):
+def make_post_request(url, data):
     try:
-        response = requests.post(url, json=postdata)
+        response = requests.post(url, json=data)
         response.raise_for_status()  # Check for errors
         return response.json()  # Return the JSON response
     except requests.exceptions.RequestException as e:
-        sys.stderr.write("Error making POST request:")
-        sys.stderr.write(e)
+        sys.stderr.write("Error making POST request:", e)
         sys.exit(1)
 
 
 if __name__ == "__main__":
     # Get the URL from command-line arguments or set it directly
-    url = "https://testportal.mainstream.co.nz/MAIN/subroutine/WEBTERMS"
+    locurl = "https://testportal.mainstream.co.nz/MAIN/subroutine/WEBUPLOADEDAPI/"
 
     # Read data from STDIN (should be JSON)
     try:
@@ -28,17 +27,16 @@ if __name__ == "__main__":
         data = data.strip()  # Remove any leading/trailing whitespaces
         data = json.loads(data)  # Parse the JSON data
     except Exception as e:
-        sys.stderr.write("Error reading data from STDIN:")
-        sys.stderr.write(e)
+        sys.stderr.write("Error reading data from STDIN:", e)
         sys.exit(1)
-        # Check we have key values from metadata and exit if not
+    '''# Check we have key values from metadata and exit if not
     try:
         filename = data['Upload']['MetaData']['filename']
     except Exception as e:
         sys.stderr.write("no filename specified")
         sys.exit(1)
     try:
-        User = data['Upload']['MetaData']['user']
+        User  = data['Upload']['MetaData']['user']
     except Exception as e:
         sys.stderr.write("No user specified")
         sys.exit(1)
@@ -47,19 +45,30 @@ if __name__ == "__main__":
     except Exception as e:
         sys.stderr.write("No usersecret specified")
         sys.exit(1)
+    '''
+    # try to write stdin to a file so we can see what it is 
+    with open("/srv/tusd-data/log/testing", "a") as logfile:
+        logfile.write(json.dumps(data))
+    
+    
+    
 
-        # construct postdata JSON
+'''
+    # construct postdata JSON
     try:
-        postdata = json.loads('{"mode": "ENQ", "user":"' + User + '", "usersecurity":"' + UserSecurity + '"}')
+        postdata = json.loads({"mode": "ENQ",
+                               "user": User,
+                               "usersecurity": UserSecurity})
     except Exception as e:
-        sys.stderr.write("Error generating post data")
-        sys.stderr.write(e)
+        sys.stderr.write("Error generating post data", e)
         sys.exit(1)
 
-        # Make the POST request and handle the response
+    # Make the POST request and handle the response
     response_data = make_post_request(url, postdata)
-    # sys.stderr.write(json.dumps(response_data))
-    # response_data = json.loads(response_data)
+    sys.stderr.write("Response:", response_data)
+    response_data = json.loads(response_data)
     if response_data['msg']['msgSeverity'] == 'F':
-        sys.stderr.write('User authentication failed')
-        sys.exit(1)
+        sys.stderr.write('User authentication failed', response_data['msg']['msgMain'])
+        sys.exit(1) '''
+    
+    
