@@ -20,7 +20,8 @@ def make_post_request(url, postdata):
 
 if __name__ == "__main__":
     # Get the URL from command-line arguments or set it directly
-    url = "https://testportal.mainstream.co.nz/MAIN/subroutine/WEBTERMS"
+    authurl = "https://testportal.mainstream.co.nz/MAIN/subroutine/WEBTERMS"
+    uploadapi = "https://testportal.mainstream.co.nz/MAIN/subroutine/WEBUPLOADAPI"
 
     # Read data from STDIN (should be JSON)
     try:
@@ -38,12 +39,12 @@ if __name__ == "__main__":
         sys.stderr.write("no filename specified")
         sys.exit(1)
     try:
-        User = data['Upload']['MetaData']['user']
+        User = data['Upload']['MetaData']['email']
     except Exception as e:
         sys.stderr.write("No user specified")
         sys.exit(1)
     try:
-        UserSecurity = data['Upload']['MetaData']['usersecurity']
+        UserSecurity = data['Upload']['MetaData']['secret']
     except Exception as e:
         sys.stderr.write("No usersecret specified")
         sys.exit(1)
@@ -56,10 +57,13 @@ if __name__ == "__main__":
         sys.stderr.write(e)
         sys.exit(1)
 
-        # Make the POST request and handle the response
-    response_data = make_post_request(url, postdata)
+    # First we confirm Auth is good
+    response_data = make_post_request(authurl, postdata)
     # sys.stderr.write(json.dumps(response_data))
     # response_data = json.loads(response_data)
     if response_data['msg']['msgSeverity'] == 'F':
         sys.stderr.write('User authentication failed')
         sys.exit(1)
+    
+    
+    

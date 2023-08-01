@@ -55,6 +55,7 @@ RUN apk add --no-cache tzdata
 ENV TZ=Pacific/Auckland
 
 # samba and mount of remote server 
+# RUN apk add samba-client samba-utils
 
 
 COPY --from=builder /go/bin/tusd /usr/local/bin/tusd
@@ -64,4 +65,4 @@ EXPOSE 1080
 USER tusd
 
 ENTRYPOINT ["/usr/local/share/docker-entrypoint.sh"]
-CMD [ "--hooks-dir", "/srv/tusd-hooks", "--hooks-enabled-events", "pre-create,pre-finish,post-finish"]
+CMD [ "--upload-dir", "/srv17-test", "--hooks-dir", "/srv/tusd-hooks", "--hooks-enabled-events", "pre-create,pre-finish,post-finish"]

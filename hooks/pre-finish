@@ -27,8 +27,8 @@ if __name__ == "__main__":
         data = data.strip()  # Remove any leading/trailing whitespaces
         data = json.loads(data)  # Parse the JSON data
     except Exception as e:
-        sys.stderr.write("Error reading data from STDIN:", e)
-        sys.exit(1)
+        sys.stderr.write("Error reading data from STDIN:")
+        #sys.exit(1)
     '''# Check we have key values from metadata and exit if not
     try:
         filename = data['Upload']['MetaData']['filename']
@@ -41,15 +41,20 @@ if __name__ == "__main__":
         sys.stderr.write("No user specified")
         sys.exit(1)
     try:
-        UserSecurity = data['Upload']['MetaData']['usersecurity']
+        UserSecurity = data['Upload']['MetaData']['usersecurity'] 
     except Exception as e:
         sys.stderr.write("No usersecret specified")
         sys.exit(1)
     '''
     # try to write stdin to a file so we can see what it is 
-    with open("/srv/tusd-data/log/testing", "a") as logfile:
+    with open("/srv/tusd-data/logs/testing", "a") as logfile:
         logfile.write(json.dumps(data))
     
+    
+    # all good so lets get location to save file 
+    response_data = "make_post_request(locurl, postdata)"
+    
+    # dummy here until API is ready to provide us location, for now I'm saving to srv17/testdocuments/customerid/noteid/fileid.fileextenstion 
     
     
 
